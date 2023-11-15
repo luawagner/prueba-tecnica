@@ -1,11 +1,15 @@
 
 import { useEffect, useState } from 'react'
 import './App.css'
-import { type User } from './types.d'
 import { UsersList } from './components/UsersList'
 
 function App() {
-  const [users, setUsers] = useState<User[]>([])
+  const [users, setUsers] = useState([]);
+  const [showColors, setShowColors] = useState(false)
+  const toggleColors = () => {
+    setShowColors(!showColors) //cuando se ejecute invierte el estado actual
+  }
+
   useEffect(() => {
     fetch('https://randomuser.me/api/?results=100')
     .then(res => res.json())
@@ -21,8 +25,13 @@ function App() {
   return (
     
     <div className='App'>
+      <header>
+    <button onClick={toggleColors}>Colorear filas</button>
+      </header>
+      <main>
     <h1>Prueba técnica</h1>
-    <UsersList users={users} />
+    <UsersList showColors={showColors} users={users} />
+    </main>
    </div>
    
    

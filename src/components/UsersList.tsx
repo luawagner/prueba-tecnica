@@ -1,13 +1,14 @@
 import { type User } from '../types.d'
 
 interface Props {
+    showColors: boolean
     users: User[]
 }
 
-export function UsersList ({ users }: Props) {
+export function UsersList ({ showColors, users }: Props) {
 
     return (
-        <table>
+        <table width='100%'>
             <thead>
                 <tr>
                     <th>Foto</th>
@@ -20,9 +21,14 @@ export function UsersList ({ users }: Props) {
             </thead>
 
             <tbody>
-                {users.map(user => {
+                {users.map((user, index) => {
+                    //tomo el índice, si es par le aplico un tono sino otro
+                    const backgroundColor = index % 2 === 0 ? '#333' : '#555'
+                    const color = showColors ? backgroundColor : 'transparent'
+                    //color aplicará el color si el estado showColors es true, sino dejará transparente
                     return(
-                        <tr key={user.id.value}> {/*id es un objeto, por eso accedo a su value*/}
+                        //le indico que aplique los estilos de color  
+                        <tr key={index} style={{ backgroundColor: color }}> {/*id es un objeto, por eso accedo a su value*/}
                         <td>
                             <img src={user.picture.thumbnail}/>
                         </td>
