@@ -1,11 +1,12 @@
 import { type User } from '../types.d'
 
 interface Props {
+    deleteUser: (email: string) => void
     showColors: boolean
     users: User[]
 }
 
-export function UsersList ({ showColors, users }: Props) {
+export function UsersList ({ deleteUser, showColors, users }: Props) {
 
     return (
         <table width='100%'>
@@ -28,7 +29,7 @@ export function UsersList ({ showColors, users }: Props) {
                     //color aplicará el color si el estado showColors es true, sino dejará transparente
                     return(
                         //le indico que aplique los estilos de color  
-                        <tr key={index} style={{ backgroundColor: color }}> {/*id es un objeto, por eso accedo a su value*/}
+                        <tr key={user.email} style={{ backgroundColor: color }}> {/*id es un objeto, por eso accedo a su value*/}
                         <td>
                             <img src={user.picture.thumbnail}/>
                         </td>
@@ -42,7 +43,7 @@ export function UsersList ({ showColors, users }: Props) {
                             {user.location.country}
                         </td>
                         <td>
-                            <button>Eliminar</button>
+                            <button onClick={() => { deleteUser(user.email)}}>Eliminar</button>
                         </td>
                         </tr>
                     )

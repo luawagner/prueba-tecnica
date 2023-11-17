@@ -14,11 +14,18 @@ function App() {
     setShowColors(!showColors) //cuando se ejecute invierte el estado actual
   }
 
-  //El estado antes de la actualización. Compara prevState con this.state para determinar lo que cambió.
+  //El estado antes de la actualización. 
+  //Compara prevState con this.state para determinar lo que cambió.
   const toggleSortByCountry = () => {
     setSortByCountry(prevState => !prevState)
-  }
- 
+  } //funcion interruptor
+
+  //Recibe el email del user que queremos borrar. Filtra los users y devuelve aquellos
+  //que son diferentes del email que le pasamos.
+ const handleDelete = (email: string) => {
+  const filteredUsers = users.filter((user) => user.email !== email)
+  setUsers(filteredUsers)
+ }
 
   useEffect(() => {
     fetch('https://randomuser.me/api/?results=100')
@@ -32,6 +39,7 @@ function App() {
   }, [])
 //Para tipar los datos de la Api, copio el raw y lo pego en quicktype
 
+//tener un solo estado para aquí hacer los cálculos necesarios con ese estado
 const sortedUsers = sortByCountry 
 ? users.toSorted((a, b) => {
   return a.location.country.localeCompare(b.location.country)
@@ -51,7 +59,7 @@ const sortedUsers = sortByCountry
       </header>
       <main>
     
-    <UsersList showColors={showColors} users={sortedUsers} />
+    <UsersList deleteUser={handleDelete} showColors={showColors} users={sortedUsers} />
     </main>
    </div>
    
