@@ -1,5 +1,5 @@
 
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useRef } from 'react'
 import './App.css'
 import { UsersList } from './components/UsersList'
 import { User } from './types'
@@ -8,6 +8,11 @@ function App() {
   const [users, setUsers] = useState<User[]>([]);
   const [showColors, setShowColors] = useState(false);
   const [sortByCountry, setSortByCountry] = useState(false)
+  const originalUsers = useRef<User[]>([])
+  //userRef -> guarda un valor que queremos que se comparta
+  //entre renderizados pero que, al cambiar, no vuelva a renderizar el componente
+  //Al llamar a la API guardamos esta referencia para disponer de ella
+  //cuando el estado users cambie.
 
   //actualización del estado basado en el estado previo
   const toggleColors = () => {
@@ -20,18 +25,24 @@ function App() {
     setSortByCountry(prevState => !prevState)
   } //funcion interruptor
 
+  const handleReset = () => {
+    setUsers(originalUsers.current)
+   }//reseteamos el estado de users, pasandole la referencia guardada con useRef. 
+   //Así evitamos crear otro estado.
+  
   //Recibe el email del user que queremos borrar. Filtra los users y devuelve aquellos
   //que son diferentes del email que le pasamos.
  const handleDelete = (email: string) => {
   const filteredUsers = users.filter((user) => user.email !== email)
   setUsers(filteredUsers)
  }
-
+ 
   useEffect(() => {
     fetch('https://randomuser.me/api/?results=100')
-    .then(res => res.json())
+    .then(async res => await res.json())
     .then(res => {
       setUsers(res.results)
+      originalUsers.current = res.results //guardamos la referencia para el useRef
     })
     .catch(err => {
       console.log(err)
@@ -51,6 +62,7 @@ const sortedUsers = sortByCountry
     <div className='App'>
       <h1>Prueba técnica</h1>
       <header>
+      <button onClick={handleReset}>Resetear usuarios</button>
     <button onClick={toggleColors}>Colorear filas</button>
     <button onClick={toggleSortByCountry}>
       {sortByCountry ? 'No ordenar' : 'Ordenar por país'}
