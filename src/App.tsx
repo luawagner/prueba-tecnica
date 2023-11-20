@@ -2,14 +2,14 @@
 import { useEffect, useState, useRef, useMemo } from 'react'
 import './App.css'
 import { UsersList } from './components/UsersList'
-import { User } from './types'
+import { User, SortBy } from './types.d'
 
 function App() {
 
   //-------------- ESTADOS
   const [users, setUsers] = useState<User[]>([]);
   const [showColors, setShowColors] = useState(false);
-  const [sortByCountry, setSortByCountry] = useState(false)
+  const [sorting, setSorting] = useState<SortBy>(SortBy.NONE)
   const [filterCountry, setFilterCountry] = useState<string | null>(null)
 
   const originalUsers = useRef<User[]>([])
@@ -28,9 +28,14 @@ function App() {
 
   //El estado antes de la actualización. 
   //Compara prevState con this.state para determinar lo que cambió.
-  const toggleSortByCountry = () => {
+  /*const toggleSortByCountry = () => {
     setSortByCountry(prevState => !prevState)
-  } //funcion interruptor
+  } //funcion interruptor */
+
+  const toggleSortByCountry = () => {
+    const newSortingValue = sorting === SortBy.NONE ? SortBy.COUNTRY : SortBy.NONE
+    setSorting(newSortingValue)
+  }
 
   const handleReset = () => {
     setUsers(originalUsers.current)
@@ -42,6 +47,10 @@ function App() {
  const handleDelete = (email: string) => {
   const filteredUsers = users.filter((user) => user.email !== email)
   setUsers(filteredUsers)
+ }
+
+ const handleChangeSort = (sort: SortBy) => {
+  setSorting(sort)
  }
 
  //------------------FETCHING DE DATOS
@@ -80,18 +89,18 @@ const filteredUsers = useMemo(() => {
 //---------------------SEGUNDO ORDENAMOS LOS USUARIOS
 /*quiero que memorice el valor de la constante sortedUsers
 y que no lo vuelva a calcular entre renderizados a no ser que el valor 
-de filteredUsers o de sortByCountry cambie.
+de filteredUsers o de sorting cambie.
 Le paso filteredUsers que va a darle los usuarios ya filtrados
 o, si no hay un filtro aplicado, la lista completa de usuarios*/
 
 const sortedUsers = useMemo(() => {
-  return sortByCountry 
+  return sorting === SortBy.COUNTRY
   ? filteredUsers.toSorted(
     (a, b) => 
      a.location.country.localeCompare(b.location.country)
   )
   : filteredUsers
-}, [filteredUsers, sortByCountry]) /*si coloreo filas (showColors) se vuelve a renderizar el componente
+}, [filteredUsers, sorting]) /*si coloreo filas (showColors) se vuelve a renderizar el componente
 pero esta función no se vuelve a ejecutar porque no cambió ninguno de los estados 
 que le indiqué que vigile. */
 
@@ -104,7 +113,7 @@ que le indiqué que vigile. */
       <button onClick={handleReset}>Resetear usuarios</button>
     <button onClick={toggleColors}>Colorear filas</button>
     <button onClick={toggleSortByCountry}>
-      {sortByCountry ? 'No ordenar' : 'Ordenar por país'}
+      {sorting === SortBy.COUNTRY ? 'No ordenar' : 'Ordenar por país'}
       </button>
 
       {/*cada vez que se escriba en este input se cambiará el estado del filterCountry*/}
@@ -114,7 +123,7 @@ que le indiqué que vigile. */
       </header>
       <main>
     
-    <UsersList deleteUser={handleDelete} showColors={showColors} users={sortedUsers} />
+    <UsersList changeSorting={handleChangeSort} deleteUser={handleDelete} showColors={showColors} users={sortedUsers} />
     </main>
    </div>
    
