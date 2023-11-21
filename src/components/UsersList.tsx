@@ -14,9 +14,9 @@ export function UsersList ({ changeSorting, deleteUser, showColors, users }: Pro
             <thead>
                 <tr>
                     <th>Foto</th>
-                    <th onClick={() => changeSorting(SortBy.NAME)}>Nombre</th>
-                    <th onClick={() => changeSorting(SortBy.LAST)}>Apellido</th>
-                    <th onClick={() => changeSorting(SortBy.COUNTRY)}>País</th>
+                    <th className='pointer' onClick={() => changeSorting(SortBy.NAME)}>Nombre</th>
+                    <th  className='pointer'onClick={() => changeSorting(SortBy.LAST)}>Apellido</th>
+                    <th className='pointer' onClick={() => changeSorting(SortBy.COUNTRY)}>País</th>
                     <th>Acciones</th>
 
                 </tr>

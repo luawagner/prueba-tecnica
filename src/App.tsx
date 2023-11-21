@@ -85,6 +85,9 @@ const filteredUsers = useMemo(() => {
  
 
 
+
+
+
 //tener un solo estado para aquí hacer los cálculos necesarios con ese estado
 //---------------------SEGUNDO ORDENAMOS LOS USUARIOS
 /*quiero que memorice el valor de la constante sortedUsers
@@ -94,12 +97,24 @@ Le paso filteredUsers que va a darle los usuarios ya filtrados
 o, si no hay un filtro aplicado, la lista completa de usuarios*/
 
 const sortedUsers = useMemo(() => {
-  return sorting === SortBy.COUNTRY
-  ? filteredUsers.toSorted(
-    (a, b) => 
-     a.location.country.localeCompare(b.location.country)
-  )
-  : filteredUsers
+  
+    if (sorting === SortBy.NONE) return filteredUsers;
+    if (sorting === SortBy.COUNTRY) {
+      return filteredUsers.toSorted((a, b) =>
+        a.location.country.localeCompare(b.location.country)
+      );
+    }
+    if (sorting === SortBy.NAME) {
+      return filteredUsers.toSorted((a, b) =>
+        a.name.first.localeCompare(b.name.first)
+      );
+    }
+    if (sorting === SortBy.LAST) {
+      return filteredUsers.toSorted((a, b) =>
+        a.name.last.localeCompare(b.name.last)
+      );
+    }
+  return filteredUsers //No olvidar el caso por defecto
 }, [filteredUsers, sorting]) /*si coloreo filas (showColors) se vuelve a renderizar el componente
 pero esta función no se vuelve a ejecutar porque no cambió ninguno de los estados 
 que le indiqué que vigile. */
